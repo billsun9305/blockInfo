@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -39,9 +38,9 @@ public class EthereumRpcService {
 
     private WebClient webClient;
 
-    private long startBlockNumber;
+    long startBlockNumber;
 
-    private volatile boolean isInitialSyncComplete = false;
+    volatile boolean isInitialSyncComplete = false;
 
     public record EthRequest(String jsonrpc, String method, List<Object> params, int id) {}
     public record EthBlockResponse(String jsonrpc, int id, JsonNode result) {}
@@ -51,12 +50,12 @@ public class EthereumRpcService {
     public EthereumRpcService(WebClient.Builder webClientBuilder, BlockRepository blockRepository) throws JsonProcessingException {
         this.webClient = webClientBuilder.baseUrl("https://data-seed-prebsc-1-s1.binance.org:8545/").build();
         this.blockRepository = blockRepository;
-//        this.startBlockNumber = fetchLatestBlockNumberFromRpc() - 200;
-        this.startBlockNumber =  35447221 - 400;
+//        this.startBlockNumber =  35455208 - 10;
     }
 
     @PostConstruct
     public void init() throws JsonProcessingException {
+        this.startBlockNumber = fetchLatestBlockNumberFromRpc() - 10;
         long startTime = System.currentTimeMillis();
 
         initialBlockSynchronization();
@@ -84,32 +83,6 @@ public class EthereumRpcService {
             latestBlockInDb++;
         }
         isInitialSyncComplete = true;
-    }
-
-    @Scheduled(fixedRate = 5000)  // 5000ms = 5 seconds
-    public void regularBlockUpdate() throws JsonProcessingException {
-        if (!isInitialSyncComplete) {
-            return;
-        }
-
-        Long latestBlockInDb = findLatestBlockNumberFromDB();
-        logger.info("regularBlockUpdate latestBlockInDbBigInt: {}", latestBlockInDb);
-
-        if (latestBlockInDb == null) {
-            latestBlockInDb = startBlockNumber;
-        }
-        long nextBlockToFetch = latestBlockInDb + 1;
-        logger.info("nextBlockToFetch: {}", nextBlockToFetch);
-
-        long latestBlockFromRpc = fetchLatestBlockNumberFromRpc();
-        logger.info("latestBlockFromRpc: {}", latestBlockFromRpc);
-
-        while (nextBlockToFetch < latestBlockFromRpc && fetchAndStoreBlock(nextBlockToFetch)) {
-            logger.info("fetching to latest block. Latest block is: {}", latestBlockFromRpc);
-            nextBlockToFetch++;
-            logger.info("Next block to fetch: {}", nextBlockToFetch);
-
-        }
     }
 
     @Transactional
@@ -161,7 +134,7 @@ public class EthereumRpcService {
         return false;
     }
 
-    private long fetchLatestBlockNumberFromRpc() throws JsonProcessingException {
+    public long fetchLatestBlockNumberFromRpc() throws JsonProcessingException {
         setFetchingStrategy("latestBlockFetchingStrategy");
         EthBlockResponse response = fetchData("latest");
 
