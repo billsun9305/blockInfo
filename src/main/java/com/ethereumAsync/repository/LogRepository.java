@@ -1,6 +1,6 @@
-package com.populateTable.repository;
+package com.ethereumAsync.repository;
 
-import com.populateTable.model.Log;
+import com.ethereumAsync.model.Log;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

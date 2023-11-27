@@ -1,4 +1,4 @@
-package com.populateTable.controller;
+package com.ethereumAsync.controller;
 
 import com.ethereum.model.Block;
 import com.ethereum.service.EthereumService;
@@ -20,8 +20,8 @@ public class EthereumController {
     }
 
     @GetMapping("/blocks/{id}")
-    public Block getBlockById(@PathVariable Long id) {
-        return ethereumService.getBlockById(id);
+    public List<Block> getBlockById(@PathVariable String blockNumber) {
+        return ethereumService.getBlockById(blockNumber);
     }
 
 //    @GetMapping("/transaction/{txHash}")

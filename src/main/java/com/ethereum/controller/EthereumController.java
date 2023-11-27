@@ -1,4 +1,4 @@
-package com.ethereum.demo.controller;
+package com.ethereum.controller;
 
 import com.ethereum.model.Block;
 import com.ethereum.service.EthereumService;
@@ -20,7 +20,7 @@ public class EthereumController {
     }
 
     @GetMapping("/blocks/{id}")
-    public Block getBlockById(@PathVariable Long id) {
+    public List<Block> getBlockById(@PathVariable String id) {
         return ethereumService.getBlockById(id);
     }
 

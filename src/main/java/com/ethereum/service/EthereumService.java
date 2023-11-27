@@ -28,9 +28,9 @@ public class EthereumService {
         return blocks;
     }
 
-    public Block getBlockById(Long id) {
-        Optional<Block> block = blockRepository.findById(id);
-        return block.orElse(null); // return block or null if not found
+    public List<Block> getBlockById(String blockNumber) {
+        List<Block> blocks = blockRepository.findBlockByNumber(blockNumber);
+        return blocks;
     }
 
 //    public Transaction getTransactionByTxHash(String txHash) {

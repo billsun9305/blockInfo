@@ -1,4 +1,4 @@
-package com.populateTable.model;
+package com.ethereumAsync.model;
 
 import com.ethereum.model.Transaction;
 import lombok.Data;

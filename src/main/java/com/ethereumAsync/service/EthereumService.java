@@ -1,4 +1,4 @@
-package com.populateTable.service;
+package com.ethereumAsync.service;
 
 import com.ethereum.model.Block;
 import com.ethereum.model.Transaction;
@@ -29,10 +29,10 @@ public class EthereumService {
         return blocks;
     }
 
-    public Block getBlockById(Long id) {
-        Optional<Block> block = blockRepository.findById(id);
-        return block.orElse(null); // return block or null if not found
-    }
+//    public Block getBlockById(Long id) {
+//        Optional<Block> block = blockRepository.findById(id);
+//        return block.orElse(null); // return block or null if not found
+//    }
 
     public Transaction getTransactionByTxHash(String txHash) {
         Optional<Transaction> transaction = transactionRepository.findById(txHash);
